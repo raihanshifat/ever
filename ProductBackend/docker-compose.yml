@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  backend_flask:
+    build:
+      context: .
+    command: python app.py
+    volumes:
+      - .:/app
+    ports:
+      - '5000:5000'
+    depends_on:
+      - postgres_flask
+      - redis_flask
+  postgres_flask:
+    image: postgres:15.0-alpine
+    restart: always
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgresdb_flask:/var/lib/postgresql/data/
+  redis_flask:
+    image: redis:alpine
+    ports:
+      - '6380:6379'
+    volumes:
+      - redisdata_flask:/data
+
+volumes:
+  postgresdb_flask:
+  redisdata_flask:
