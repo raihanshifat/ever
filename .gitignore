@@ -1,5 +1,7 @@
-Frontend/justforshopping/node_modules
+
 ProductBackend/venv
 UserBackend/.idea
 UserBackend/Dashboard/venv
 UserBackend/Dashboard/.idea
+/ChatBackend/node_modules/
+Frontend/frontend_full/node_modules
