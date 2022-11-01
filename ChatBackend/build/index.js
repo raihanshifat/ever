@@ -1,14 +1,27 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const app = (0, express_1.default)();
+const { Server } = require("socket.io");
+const app = require('express')();
+const server = require('http').createServer(app);
+const cors = require("cors");
+const { FRONTENDURL, FRONTENDPORT } = require("./config/config_variables");
 const PORT = 4000;
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.use(cors());
+const io = new Server(server, {
+    cors: {
+        origin: FRONTENDURL + ":" + FRONTENDPORT,
+    },
 });
-app.listen(PORT, () => {
-    console.log(`Express server is listening at ${PORT}`);
+// io.use((socket : Socket, next : any)=>{
+//     const username = socket.handshake.auth.username;
+//     if(!username){
+//         return next(new Error("invalid username"))
+//     }
+//     socket.username = username
+//     next();
+// })
+server.listen(PORT, () => {
+    console.log(`listening on *:${PORT}`);
+});
+io.on('connection', (socket) => {
+    console.log('new client connected');
 });
