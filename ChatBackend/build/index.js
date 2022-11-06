@@ -11,17 +11,24 @@ const io = new Server(server, {
         origin: FRONTENDURL + ":" + FRONTENDPORT,
     },
 });
-// io.use((socket : Socket, next : any)=>{
-//     const username = socket.handshake.auth.username;
-//     if(!username){
-//         return next(new Error("invalid username"))
-//     }
-//     socket.username = username
-//     next();
-// })
+io.use((socket, next) => {
+    const userName = socket.handshake.auth.fromUserName;
+    if (!userName) {
+        return next(new Error("invalid username"));
+    }
+    socket.id = userName;
+    next();
+});
 server.listen(PORT, () => {
     console.log(`listening on *:${PORT}`);
 });
 io.on('connection', (socket) => {
     console.log('new client connected');
+    console.log(socket.id);
+    socket.on("private message", ({ content }) => {
+        console.log(content.touserid);
+        socket.to(content.touserid).emit("private message", {
+            content: content
+        });
+    });
 });

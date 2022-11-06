@@ -2,22 +2,17 @@ import { useState,useEffect } from 'react';
 import socket from '../../objects/socket';
 import { messageInterface } from '../../interfaces/interface';
 
-
-
 const ChatBox = () => {
-
-socket.on("private message",({content}:any)=>{
-  messages.push(content)  
-})
  
 const [fromUserName,setFromUserName] = useState<string>("");
-const [texts,setTexts] = useState<messageInterface>({
-  userid:"",
-  text:""
-});
-const [isAuthenticated,setIsAuthenticated] = useState<boolean>(false)
+const [toUserName, setToUserName] = useState<string>("");
+const [messageBody,setMessageBody] = useState<string>("");
+const [isAuthenticated,setIsAuthenticated] = useState<boolean>(false);
 const [messages, setMessages ] = useState<messageInterface[]>([]);
-const [toUserName, setToUserName] = useState<string>("")
+
+socket.off("private message").on("private message",({content}:any)=>{
+  setMessages((prev)=>[...prev,content])
+})
 
 const handleChangeUserName = (event : any)=>{
   if(event.target.id === "FromUserName"){
@@ -30,6 +25,7 @@ const handleChangeUserName = (event : any)=>{
 
 const handleSubmitUserName = (event : any) =>{
    event.preventDefault()
+   console.log(fromUserName)
       socket.auth = {fromUserName};
       try{
         socket.connect();
@@ -39,38 +35,43 @@ const handleSubmitUserName = (event : any) =>{
       };
 };
 
+const handleMessage = (event:any) =>{
+  setMessageBody(event.target.value)
+}
+
 const handleSubmitMessage= (event:any)=>{
   event.preventDefault()
   
-  let messageBody : messageInterface = {
-    userid:fromUserName,
-    text:event.target.value
+  let message : messageInterface = {
+    fromuserid:fromUserName,
+    text:messageBody,
+    touserid:toUserName
   }
   socket.emit("private message",{
-    content : messageBody
+    content : message
   })
-  setTexts(messageBody)
-  messages.push(texts);
+  setMessages((prev)=>[...prev,message]);
 }
+
 return (
   <div className="">
     <div style={{display:isAuthenticated?"none":""}}>
       <input id='FromUserName' onChange={handleChangeUserName}/>
       <input id='ToUserName' onChange={handleChangeUserName}/>
-      <button onSubmit={handleSubmitUserName}>Enter</button>
+      <button onClick={handleSubmitUserName}>Enter</button>
     </div>
-    <>
-    {
-      messages.forEach((message:messageInterface)=>{
-        <>
-        <b>{message.userid}</b>
-        <b>{message.text}</b>
-        </>
-      }) 
-    }
-    <input id='message' onChange={handleSubmitMessage}/>
-    </>
+    {messages.map((message, index) => {
+        return (
+          <div key={index}>
+            <p>{message.fromuserid}</p>
+            <p>{message.text}</p>
+          </div>
+        )
+      })}
+    <input id='message' onChange={handleMessage}/>
+    <button onClick={handleSubmitMessage}>Enter</button>
   </div>
  )
-}
+};
+
 export default ChatBox;

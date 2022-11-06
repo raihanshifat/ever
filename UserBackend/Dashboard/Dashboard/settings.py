@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "django_elasticsearch_dsl",
-    "django_elasticsearch_dsl_drf"
+    "django_elasticsearch_dsl_drf",
+    "user_profile"
 ]
 
 MIDDLEWARE = [
@@ -138,7 +139,7 @@ CACHE_TTL = 60 * 1500
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis:6379",
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "example",
     }

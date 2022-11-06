@@ -14,7 +14,7 @@ const io = new Server(server,{
     },
 });
 io.use((socket : any, next : any)=>{
-    const userName = socket.handshake.auth.userName;
+    const userName = socket.handshake.auth.fromUserName;
     if(!userName){
         return next(new Error("invalid username"))
     }
@@ -29,8 +29,10 @@ server.listen(PORT, () => {
 io.on('connection', (socket:any) => { /* socket object may be used to send specific messages to the new connected client */
 
     console.log('new client connected');
+    console.log(socket.id);
     socket.on("private message",({content}:any)=>{
-        socket.to(content.userid).emit("private message",{
+        console.log(content.touserid)
+        socket.to(content.touserid).emit("private message",{
             content:content
         })
     })

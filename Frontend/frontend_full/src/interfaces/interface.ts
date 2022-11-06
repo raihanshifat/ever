@@ -1,4 +1,5 @@
 export interface messageInterface{
-    userid:string,
+    fromuserid:string,
     text:string,
+    touserid:string
 }
