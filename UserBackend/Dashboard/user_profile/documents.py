@@ -15,7 +15,7 @@ class UserProfileDocument(Document):
         model = UserProfile
         fields = [
             'email',
-            'first_name',
+            'full_name',
             'organization_name',
             'phone',
         ]

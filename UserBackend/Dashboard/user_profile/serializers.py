@@ -22,3 +22,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = '__all__'
 
+class UserProfileElasticSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = [
+            'email',
+            'full_name',
+            'organization_name',
+            'phone',
+        ]
+
+
+

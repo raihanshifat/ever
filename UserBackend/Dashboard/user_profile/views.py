@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import generics
 from user_profile.models import UserProfile
 from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 # Create your views here.
 
 class CreateProfile(APIView):
@@ -52,7 +53,8 @@ class CreateProfile(APIView):
 class GetProfile(generics.ListAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-    @cache_page(60*15)
+
+    @method_decorator(cache_page(60*15), name='dispatch')
     def get(self,request):
         return super().get(request)
 

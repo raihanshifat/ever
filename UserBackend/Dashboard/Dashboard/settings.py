@@ -139,7 +139,7 @@ CACHE_TTL = 60 * 1500
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis:6379",
+        "LOCATION": "redis://redis:6379",
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "example",
     }
@@ -149,6 +149,6 @@ SESSION_CACHE_ALIAS = "default"
 
 ELASTICSEARCH_DSL={
     'default': {
-        'hosts': 'elastic:9200'
+        'hosts': 'elastic://elastic:9200'
     },
 }
