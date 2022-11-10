@@ -4,9 +4,9 @@ services:
   backend_flask:
     build:
       context: .
-    command: python app.py
+    command: flask --debug run --host=0.0.0.0 
     volumes:
-      - .:/app
+      - ./:/app
     ports:
       - '5000:5000'
     depends_on:

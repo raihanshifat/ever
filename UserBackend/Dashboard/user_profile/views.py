@@ -8,8 +8,16 @@ from rest_framework import generics
 from user_profile.models import UserProfile
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-# Create your views here.
+import pika, os, signal, sys
 
+def signal_handler(signal, frame):
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+
+
+# Create your views here.
 class CreateProfile(APIView):
 
     def post(self,request):
@@ -56,6 +64,15 @@ class GetProfile(generics.ListAPIView):
 
     @method_decorator(cache_page(60*15), name='dispatch')
     def get(self,request):
+        connection = pika.BlockingConnection(pika.URLParameters('amqps://agedtxxh:pet45m8MD5j8iYRKGBtGuV13jdCdUnvO@puffin.rmq2.cloudamqp.com/agedtxxh'))
+        channel = connection.channel()
+        channel.queue_declare(queue='hello')
+
+
+        channel.basic_publish(exchange='',
+                      routing_key='hello',
+                      body=self.get_serializer(self.queryset, many=True).data)
+        connection.close()
         return super().get(request)
 
 
